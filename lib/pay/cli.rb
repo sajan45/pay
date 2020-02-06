@@ -1,9 +1,11 @@
 require_relative '../pay'
+require_relative './db'
 require 'readline'
 
 module Pay
   class CLI
     def start
+      at_exit { Pay::DB.remove_db }
       puts Pay.banner
       stty_save = `stty -g`.chomp
       begin
