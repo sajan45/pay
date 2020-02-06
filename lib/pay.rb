@@ -1,6 +1,9 @@
-require "pay/version"
+require_relative "pay/version"
 
 module Pay
   class Error < StandardError; end
-  # Your code goes here...
+  
+  def self.banner
+    "Welcome to Pay! Press CTRL + c to quit, or type help for list of commands."
+  end
 end

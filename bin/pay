@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+require_relative "../lib/pay/cli"
+
+begin
+  Pay::CLI.start
+rescue => e
+  STDERR.puts e.message
+  exit 1
+end
