@@ -1,5 +1,9 @@
 require_relative '../pay'
 require_relative './db'
+require_relative './user'
+require_relative './merchant'
+require_relative './report'
+require_relative './transaction'
 require 'readline'
 
 module Pay
@@ -45,7 +49,7 @@ module Pay
     end
 
     def handle_new(tokens)
-      if tokens.blank?
+      if tokens.empty?
         puts "Resource type is needed for new action"
         puts "Ex. new user u1 u1@email.in 1000"
         return
@@ -53,7 +57,9 @@ module Pay
       resource_type = tokens.shift
       case resource_type
       when "user"
-        Pay::User.new(tokens)
+        user = Pay::User.new(tokens)
+        Pay::DB.save_object(user, :users, user.email)
+        puts "#{user.name}(#{user.cr_limit})"
       when "merchant"
         Pay::Merchant.new(tokens)
       when "txn"
@@ -64,7 +70,7 @@ module Pay
     end
 
     def handle_update(tokens)
-      if tokens.blank?
+      if tokens.empty?
         puts "Resource type is needed for update action"
         puts "Ex. update merchant m1 1%"
         return
@@ -79,7 +85,7 @@ module Pay
     end
 
     def handle_report(tokens)
-      if tokens.blank?
+      if tokens.empty?
         puts "Report action needs at lease 1 argument"
         puts "Ex. report discount m1"
         puts "    report users-at-credit-limit"
@@ -91,7 +97,7 @@ module Pay
     end
 
     def handle_payback(tokens)
-      if tokens.blank?
+      if tokens.empty?
         puts "User name is needed for payback"
         puts "Ex. payback u1 300"
         return
