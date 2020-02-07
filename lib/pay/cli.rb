@@ -61,7 +61,9 @@ module Pay
         Pay::DB.save_object(user, :users, user.name)
         puts "#{user.name}(#{user.cr_limit})"
       when "merchant"
-        Pay::Merchant.new(tokens)
+        merchant = Pay::Merchant.new(tokens)
+        Pay::DB.save_object(merchant, :merchants, merchant.name)
+        puts "#{merchant.name}(#{merchant.discount}%)"
       when "txn"
         Pay::Transaction.new(tokens)
       else
@@ -79,6 +81,7 @@ module Pay
       case resource_type
       when "merchant"
         Pay::Merchant.update_discount(tokens)
+        puts "Merchant discount updated"
       else
         puts "Unknown resource type: #{resource_type}"
       end
@@ -109,7 +112,7 @@ module Pay
       message = <<-HELP
 Supported actions are 'new, update, report, payback'.
 Ex. new user u1 u1@email.in 1000
-    new merchant m1 2%
+    new merchant m1 m1@merchants.com 0.5%
     new txn u1 m2 400
 
     update merchant m1 1%
