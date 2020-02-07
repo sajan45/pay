@@ -29,5 +29,10 @@ module Pay
         raise Error, "Please provide merchant name and new discount"
       end
     end
+
+    def self.exists?(merchant_name)
+      merchant = Pay::DB.get_object(:merchants, merchant_name)
+      !!merchant
+    end
   end
 end

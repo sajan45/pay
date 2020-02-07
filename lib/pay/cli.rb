@@ -65,7 +65,7 @@ module Pay
         Pay::DB.save_object(merchant, :merchants, merchant.name)
         puts "#{merchant.name}(#{merchant.discount}%)"
       when "txn"
-        Pay::Transaction.new(tokens)
+        Pay::User.record_transaction(tokens)
       else
         puts "Unknown resource type: #{resource_type}"
       end
