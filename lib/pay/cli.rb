@@ -58,7 +58,7 @@ module Pay
       case resource_type
       when "user"
         user = Pay::User.new(tokens)
-        Pay::DB.save_object(user, :users, user.email)
+        Pay::DB.save_object(user, :users, user.name)
         puts "#{user.name}(#{user.cr_limit})"
       when "merchant"
         Pay::Merchant.new(tokens)

@@ -10,7 +10,7 @@ module Pay
       @name, @email, @cr_limit = data_arr
       @cr_limit = @cr_limit.to_f.round(2)
       existing_users = Pay::DB.get_object(:users) || {}
-      raise Pay::Error, "User already exists" if existing_users.keys.include?(@email)
+      raise Pay::Error, "User already exists" if existing_users.keys.include?(@name) # assuming name is primary key and unique
       raise Pay::Error, "Provide an positive integer value for credit limit" if @cr_limit.zero?
     end
   end
