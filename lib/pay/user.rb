@@ -21,7 +21,6 @@ module Pay
       raise Error, "rejected! (reason: credit limit)" unless user.credit_available_for(txn.amount)
       Pay::DB.save_object(txn, :transactions)
       user.update_balance(txn.amount, :debit)
-      puts "Success!!"
     end
 
     def credit_available_for(amount)

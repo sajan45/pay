@@ -4,6 +4,7 @@ require_relative './user'
 require_relative './merchant'
 require_relative './report'
 require_relative './transaction'
+require_relative './payment'
 require 'readline'
 
 module Pay
@@ -66,6 +67,7 @@ module Pay
         puts "#{merchant.name}(#{merchant.discount}%)"
       when "txn"
         Pay::User.record_transaction(tokens)
+        puts "Success!!"
       else
         puts "Unknown resource type: #{resource_type}"
       end
@@ -105,7 +107,9 @@ module Pay
         puts "Ex. payback u1 300"
         return
       end
-      Pay::Transaction.record_payback(tokens)
+      payment = Pay::Payment.record_payback(tokens)
+      user = Pay::DB.get_object(:users, payment.user)
+      puts "#{user.name}(dues: #{user.due})"
     end
 
     def print_help
