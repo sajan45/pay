@@ -56,11 +56,10 @@ module Pay
     end
 
     def self.get_user_wise_due
-      users_dues = {total: 0.0}
+      users_dues = {}
       all_users.each do |user_name, user|
         if user.due > 0
           users_dues[user_name] = user.due
-          users_dues[total] += user.due
         end
       end
       users_dues

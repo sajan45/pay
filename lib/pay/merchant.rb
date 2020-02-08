@@ -21,12 +21,12 @@ module Pay
     end
 
     def get_total_discount
-      total_transactions = 0.0
+      total_discount = 0.0
       all_txns = Pay::Transaction.all_transactions
       all_txns.each do |txn|
-        total_transactions += txn.amount if txn.merchant == self.name
+        total_discount += txn.merchant_discount if txn.merchant == self.name
       end
-      return ((total_transactions * discount) / 100).round(2)
+      return total_discount
     end
 
     def self.update_discount(data)

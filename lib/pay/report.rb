@@ -11,7 +11,11 @@ module Pay
       when "users-at-credit-limit"
         Pay::User.get_users_at_cr_limit
       when "total-dues"
-        Pay::User.get_user_wise_due
+        users_dues = Pay::User.get_user_wise_due
+        total = 0.0
+        users_dues.each { |_u, due| total += due }
+        users_dues[:total] = total
+        return users_dues
       when "dues"
         raise Error, "user name required" if tokens.empty?
         user = Pay::DB.get_object(:users, tokens.shift)
