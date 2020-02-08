@@ -1,0 +1,15 @@
+{:merchants{
+I"m2:ETo:Pay::Merchant:
+@nameI"m2;T:@emailI"m2@email.com;T:@discountf0.5I"m4;To;;I"m4;T;	I"m4@email.com;T;
+f1I"m5;To;;I"m5;T;	I"m5@email.com;T;
+f5I"m6;To;;I"m6;T;	I"m6@email.com;T;
+@I"m7;To;;I"m7;T;	I"m7@email.com;T;
+@:
+users{I"
+user1;To:Pay::User	;I"
+user1;T;	I"user1@email.com;T:@cr_limitf0:	@duef2e2I"
+user2;To;	;I"
+user2;T;	I"user2@email.com;T;f1e2;@$:transactions[o:Pay::Transaction	:
+@userI"
+user1;T:@merchantI"m7;T:@amount@$:@merchant_discount@o;	;I"
+user2;T;I"m7;T;@$;@
