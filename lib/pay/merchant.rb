@@ -1,5 +1,6 @@
 require_relative "../pay"
 require_relative "./db"
+require_relative "./transaction"
 
 module Pay
   class Merchant
@@ -17,6 +18,15 @@ module Pay
         existing_merchants = Pay::DB.get_object(:merchants) || {}
         raise Error, "Merchant already exists" if existing_merchants.keys.include?(@name)# assuming name is primary key and unique
       end
+    end
+
+    def get_total_discount
+      total_transactions = 0.0
+      all_txns = Pay::Transaction.all_transactions
+      all_txns.each do |txn|
+        total_transactions += txn.amount if txn.merchant == self.name
+      end
+      return ((total_transactions * discount) / 100).round(2)
     end
 
     def self.update_discount(data)

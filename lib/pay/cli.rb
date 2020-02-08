@@ -67,7 +67,7 @@ module Pay
         puts "#{merchant.name}(#{merchant.discount}%)"
       when "txn"
         Pay::User.record_transaction(tokens)
-        puts "Success!!"
+        puts "Success!"
       else
         puts "Unknown resource type: #{resource_type}"
       end
@@ -98,7 +98,14 @@ module Pay
         puts "    report dues u1"
         return
       end
-      Pay::Report.get_report_for(tokens)
+      report = Pay::Report.get_report_for(tokens)
+      if report.is_a? Hash
+        report.each do |key, val|
+          puts "#{key}: #{val}"
+        end
+      else
+        puts report
+      end
     end
 
     def handle_payback(tokens)

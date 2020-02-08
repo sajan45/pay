@@ -46,5 +46,28 @@ module Pay
       user = Pay::DB.get_object(:users, user_name)
       !!user
     end
+
+    def self.get_users_at_cr_limit
+      users_at_limit = []
+      all_users.each do |user_name, user|
+        users_at_limit << user_name if user.cr_limit == 0
+      end
+      users_at_limit
+    end
+
+    def self.get_user_wise_due
+      users_dues = {total: 0.0}
+      all_users.each do |user_name, user|
+        if user.due > 0
+          users_dues[user_name] = user.due
+          users_dues[total] += user.due
+        end
+      end
+      users_dues
+    end
+
+    def self.all_users
+      Pay::DB.get_object(:users)
+    end
   end
 end

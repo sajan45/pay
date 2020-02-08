@@ -13,5 +13,9 @@ module Pay
       @amount = @amount.to_f.round(2)
       raise Error, "Provide an positive integer value for credit limit" if @amount.zero?
     end
+
+    def self.all_transactions
+      Pay::DB.get_object(:transactions)
+    end
   end
 end
