@@ -11,10 +11,8 @@ RSpec.describe Pay::Transaction do
 
   context "creating" do
     it "creates transaction with all required data" do
-      merchant = Pay::Merchant.new(["m3", "m3@email.com", "0.5%"])
-      Pay::DB.save_object(merchant, :merchants, merchant.name)
-      user = Pay::User.new(["u3", "u3@email.com", "500"])
-      Pay::DB.save_object(user, :users, user.name)
+      merchant = Pay::Merchant.new(["m3", "m3@email.com", "0.5%"]).save
+      user = Pay::User.new(["u3", "u3@email.com", "500"]).save
       txn = Pay::Transaction.new(["u3", "m3", "200.50"])
       expect(txn).to be_kind_of(Pay::Transaction)
     end
@@ -28,16 +26,13 @@ RSpec.describe Pay::Transaction do
     end
 
     it "raises error if merchant does not exists" do
-      user = Pay::User.new(["u2", "u2@email.com", "500"])
-      Pay::DB.save_object(user, :users, user.name)
+      user = Pay::User.new(["u2", "u2@email.com", "500"]).save
       expect{ Pay::Transaction.new(["u2", "non_existent", "200"]) }.to raise_error(Pay::Error, "Merchant does not exists")
     end
 
     it "raises error if transaction amount is not valid" do
-      merchant = Pay::Merchant.new(["m3", "m3@email.com", "0.5%"])
-      Pay::DB.save_object(merchant, :merchants, merchant.name)
-      user = Pay::User.new(["u3", "u3@email.com", "500"])
-      Pay::DB.save_object(user, :users, user.name)
+      merchant = Pay::Merchant.new(["m3", "m3@email.com", "0.5%"]).save
+      user = Pay::User.new(["u3", "u3@email.com", "500"]).save
 
       expect{ Pay::Transaction.new(["u3", "m3", "0"]) }.to raise_error(Pay::Error, "Provide an positive integer value transaction amount")
       expect{ Pay::Transaction.new(["u3", "m3", "str"]) }.to raise_error(Pay::Error, "Provide an positive integer value transaction amount")
@@ -47,12 +42,9 @@ RSpec.describe Pay::Transaction do
 
   describe ".all_transactions" do
     it "returns all transactions from db" do
-      merchant = Pay::Merchant.new(["m3", "m3@email.com", "0.5%"])
-      Pay::DB.save_object(merchant, :merchants, merchant.name)
-      user = Pay::User.new(["u3", "u3@email.com", "500"])
-      Pay::DB.save_object(user, :users, user.name)
-      user1 = Pay::User.new(["u1", "u1@email.com", "500"])
-      Pay::DB.save_object(user1, :users, user1.name)
+      merchant = Pay::Merchant.new(["m3", "m3@email.com", "0.5%"]).save
+      user = Pay::User.new(["u3", "u3@email.com", "500"]).save
+      user1 = Pay::User.new(["u1", "u1@email.com", "500"]).save
 
       Pay::User.record_transaction(["u3", "m3", 100])
       Pay::User.record_transaction(["u1", "m3", 100])

@@ -11,10 +11,8 @@ RSpec.describe Pay::Payment do
 
   context "creating" do
     it "creates payment with all required attributes" do
-      merchant = Pay::Merchant.new(["m2", "m2@email.com", "0.5%"])
-      Pay::DB.save_object(merchant, :merchants, merchant.name)
-      user = Pay::User.new(["u1", "u1@email.com", "500"])
-      Pay::DB.save_object(user, :users, user.name)
+      merchant = Pay::Merchant.new(["m2", "m2@email.com", "0.5%"]).save
+      user = Pay::User.new(["u1", "u1@email.com", "500"]).save
       Pay::User.record_transaction(["u1", "m2", 100])
       payback = Pay::Payment.new(["u1", "50"])
       expect(payback).to be_kind_of(Pay::Payment)
@@ -29,18 +27,15 @@ RSpec.describe Pay::Payment do
     end
 
     it "raises error if payment amount is not float like or zero" do
-      user = Pay::User.new(["u2", "u2@email.com", "500"])
-      Pay::DB.save_object(user, :users, user.name)
+      user = Pay::User.new(["u2", "u2@email.com", "500"]).save
       expect{Pay::Payment.new(["u2", "str"])}.to raise_error(Pay::Error, "Provide an positive integer value for payment amount")
       expect{Pay::Payment.new(["u2", "str"])}.to raise_error(Pay::Error, "Provide an positive integer value for payment amount")
       expect{Pay::Payment.new(["u2", "-1"])}.to raise_error(Pay::Error, "Provide an positive integer value for payment amount")
     end
 
     it "raises error if payment amount exceeds user's due" do
-      merchant = Pay::Merchant.new(["m3", "m3@email.com", "0.5%"])
-      Pay::DB.save_object(merchant, :merchants, merchant.name)
-      user = Pay::User.new(["u3", "u3@email.com", "500"])
-      Pay::DB.save_object(user, :users, user.name)
+      merchant = Pay::Merchant.new(["m3", "m3@email.com", "0.5%"]).save
+      user = Pay::User.new(["u3", "u3@email.com", "500"]).save
       Pay::User.record_transaction(["u3", "m3", 100])
       expect{Pay::Payment.new(["u3", "105"])}.to raise_error(Pay::Error, /Please enter a amount less than or equal to current due/)
     end
@@ -48,10 +43,8 @@ RSpec.describe Pay::Payment do
 
   describe ".record_payback" do
     it "creates a payment with proper data" do
-      merchant = Pay::Merchant.new(["m3", "m3@email.com", "0.5%"])
-      Pay::DB.save_object(merchant, :merchants, merchant.name)
-      user = Pay::User.new(["u3", "u3@email.com", "500"])
-      Pay::DB.save_object(user, :users, user.name)
+      merchant = Pay::Merchant.new(["m3", "m3@email.com", "0.5%"]).save
+      user = Pay::User.new(["u3", "u3@email.com", "500"]).save
       Pay::User.record_transaction(["u3", "m3", 100])
       Pay::Payment.record_payback(["u3", 50])
       payments = Pay::DB.get_object(:paybacks)
@@ -60,10 +53,8 @@ RSpec.describe Pay::Payment do
     end
 
     it "passes data and updates users credit limit and due" do
-      merchant = Pay::Merchant.new(["m3", "m3@email.com", "0.5%"])
-      Pay::DB.save_object(merchant, :merchants, merchant.name)
-      user = Pay::User.new(["u3", "u3@email.com", "500"])
-      Pay::DB.save_object(user, :users, user.name)
+      merchant = Pay::Merchant.new(["m3", "m3@email.com", "0.5%"]).save
+      user = Pay::User.new(["u3", "u3@email.com", "500"]).save
       Pay::User.record_transaction(["u3", "m3", 100])
       
       Pay::Payment.record_payback(["u3", 50])

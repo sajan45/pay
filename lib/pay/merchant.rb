@@ -29,12 +29,16 @@ module Pay
       return total_discount
     end
 
+    def save
+      Pay::DB.save_object(self, :merchants, self.name)
+    end
+
     def self.update_discount(data)
       if data.length == 2
         merchant = Pay::DB.get_object(:merchants, data[0])
         raise Error, "Merchant does not exists" unless merchant
         updated_merchant = self.new([data[0], merchant.email, data[1]], false)
-        Pay::DB.save_object(updated_merchant, :merchants, updated_merchant.name)
+        updated_merchant.save
       else
         raise Error, "Please provide merchant name and new discount"
       end

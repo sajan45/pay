@@ -4,7 +4,7 @@ require_relative '../lib/pay/user'
 
 RSpec.describe Pay::Merchant do
   
-  before :all do
+  before :each do
     Pay::DB.remove_db
   end
 
@@ -21,8 +21,7 @@ RSpec.describe Pay::Merchant do
     end
 
     it "raises error while creating new merchant if one name is not unique" do
-      merchant2 = Pay::Merchant.new(["m2", "m2@email.com", "0.5%"])
-      Pay::DB.save_object(merchant2, :merchants, merchant2.name)
+      merchant2 = Pay::Merchant.new(["m2", "m2@email.com", "0.5%"]).save
       expect{ Pay::Merchant.new(["m2", "m2@email.com", "0.5%"]) }.to raise_error(Pay::Error, "Merchant already exists")
     end
 
@@ -34,16 +33,14 @@ RSpec.describe Pay::Merchant do
 
   describe ".update_discount" do
     it "updates discount data if name and discount are provided" do
-      merchant = Pay::Merchant.new(["m4", "m4@email.com", "5%"])
-      Pay::DB.save_object(merchant, :merchants, merchant.name)
+      merchant = Pay::Merchant.new(["m4", "m4@email.com", "5%"]).save
       Pay::Merchant.update_discount(["m4", "1%"])
       updated_merchant = Pay::DB.get_object(:merchants, merchant.name)
       expect(updated_merchant.discount).to eq(1)
     end
 
     it "fails to update if name and new discount not provided" do
-      merchant = Pay::Merchant.new(["m5", "m5@email.com", "5%"])
-      Pay::DB.save_object(merchant, :merchants, merchant.name)
+      merchant = Pay::Merchant.new(["m5", "m5@email.com", "5%"]).save
       expect{Pay::Merchant.update_discount(["m5"])}.to raise_error(Pay::Error, "Please provide merchant name and new discount")
     end
 
@@ -54,8 +51,7 @@ RSpec.describe Pay::Merchant do
 
   describe ".exists?" do
     it "return true if merchant by provided name exists" do
-      merchant = Pay::Merchant.new(["m6", "m6@email.com", "5%"])
-      Pay::DB.save_object(merchant, :merchants, merchant.name)
+      merchant = Pay::Merchant.new(["m6", "m6@email.com", "5%"]).save
       expect(Pay::Merchant.exists?(merchant.name)).to eq(true)
     end
 
@@ -66,15 +62,21 @@ RSpec.describe Pay::Merchant do
 
   describe ".get_total_discount" do
     it "returns the total discount generated from all transactions for a merchant" do
-      merchant = Pay::Merchant.new(["m7", "m7@email.com", "0.5%"])
-      user1 = Pay::User.new(["user1", "user1@email.com", "200"])
-      user2 = Pay::User.new(["user2", "user2@email.com", "300"])
-      Pay::DB.save_object(merchant, :merchants, merchant.name)
-      Pay::DB.save_object(user1, :users, user1.name)
-      Pay::DB.save_object(user2, :users, user2.name)
+      merchant = Pay::Merchant.new(["m7", "m7@email.com", "0.5%"]).save
+      user1 = Pay::User.new(["user1", "user1@email.com", "200"]).save
+      user2 = Pay::User.new(["user2", "user2@email.com", "300"]).save
       Pay::User.record_transaction(["user1", "m7", 200])
       Pay::User.record_transaction(["user2", "m7", 200])
       expect(merchant.get_total_discount).to eq(2.0)
+    end
+  end
+
+  describe ".save" do
+    it "saves the object to DB" do
+      merchant = Pay::Merchant.new(["m8", "m8@email.com", "0.5%"]).save
+      all_merchants = Pay::DB.get_object(:merchants)
+      expect(all_merchants.length).to eq(1)
+      expect(all_merchants.keys.include?("m8")).to eq(true)
     end
   end
 end

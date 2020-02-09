@@ -16,15 +16,11 @@ RSpec.describe Pay::Report do
     end
 
     it "returns array of users at credit limit when type is users-at-credit-limit" do
-      merchant = Pay::Merchant.new(["m3", "m3@email.com", "0.5%"])
-      Pay::DB.save_object(merchant, :merchants, merchant.name)
+      merchant = Pay::Merchant.new(["m3", "m3@email.com", "0.5%"]).save
 
-      user1 = Pay::User.new(["u1", "u1@email.com", "100"])
-      Pay::DB.save_object(user1, :users, user1.name)
-      user2 = Pay::User.new(["u2", "u2@email.com", "200"])
-      Pay::DB.save_object(user2, :users, user2.name)
-      user3 = Pay::User.new(["u3", "u3@email.com", "300"])
-      Pay::DB.save_object(user3, :users, user3.name)
+      user1 = Pay::User.new(["u1", "u1@email.com", "100"]).save
+      user2 = Pay::User.new(["u2", "u2@email.com", "200"]).save
+      user3 = Pay::User.new(["u3", "u3@email.com", "300"]).save
       Pay::User.record_transaction(["u1", "m3", 100])
       Pay::User.record_transaction(["u2", "m3", 200])
       Pay::User.record_transaction(["u3", "m3", 100])
@@ -32,15 +28,11 @@ RSpec.describe Pay::Report do
     end
 
     it "returns dues for all users with a due along with total due for report type total-dues" do
-      merchant = Pay::Merchant.new(["m3", "m3@email.com", "0.5%"])
-      Pay::DB.save_object(merchant, :merchants, merchant.name)
+      merchant = Pay::Merchant.new(["m3", "m3@email.com", "0.5%"]).save
 
-      user1 = Pay::User.new(["u1", "u1@email.com", "100"])
-      Pay::DB.save_object(user1, :users, user1.name)
-      user2 = Pay::User.new(["u2", "u2@email.com", "200"])
-      Pay::DB.save_object(user2, :users, user2.name)
-      user3 = Pay::User.new(["u3", "u3@email.com", "300"])
-      Pay::DB.save_object(user3, :users, user3.name)
+      user1 = Pay::User.new(["u1", "u1@email.com", "100"]).save
+      user2 = Pay::User.new(["u2", "u2@email.com", "200"]).save
+      user3 = Pay::User.new(["u3", "u3@email.com", "300"]).save
       Pay::User.record_transaction(["u1", "m3", 100])
       Pay::User.record_transaction(["u2", "m3", 200])
       total_dues = Pay::Report.get_report_for(["total-dues"])
@@ -51,10 +43,8 @@ RSpec.describe Pay::Report do
     end
 
     it "return discount of a merchant if report type is discount" do
-      merchant = Pay::Merchant.new(["m3", "m3@email.com", "0.5%"])
-      Pay::DB.save_object(merchant, :merchants, merchant.name)
-      user1 = Pay::User.new(["u1", "u1@email.com", "200"])
-      Pay::DB.save_object(user1, :users, user1.name)
+      merchant = Pay::Merchant.new(["m3", "m3@email.com", "0.5%"]).save
+      user1 = Pay::User.new(["u1", "u1@email.com", "200"]).save
       Pay::User.record_transaction(["u1", "m3", 200])
       expect(Pay::Report.get_report_for(["discount", "m3"])).to eq(1.0)
     end
@@ -64,10 +54,8 @@ RSpec.describe Pay::Report do
     end
 
     it "return dues of a user if report type is dues" do
-      merchant = Pay::Merchant.new(["m3", "m3@email.com", "0.5%"])
-      Pay::DB.save_object(merchant, :merchants, merchant.name)
-      user1 = Pay::User.new(["u1", "u1@email.com", "100"])
-      Pay::DB.save_object(user1, :users, user1.name)
+      merchant = Pay::Merchant.new(["m3", "m3@email.com", "0.5%"]).save
+      user1 = Pay::User.new(["u1", "u1@email.com", "100"]).save
       Pay::User.record_transaction(["u1", "m3", 100])
       expect(Pay::Report.get_report_for(["dues", "u1"])).to eq(100.0)
     end

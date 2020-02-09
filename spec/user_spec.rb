@@ -23,7 +23,7 @@ RSpec.describe Pay::User do
 
     it "raises error when name is not unique" do
       user = Pay::User.new(["u1", "u1@email.com", "300"])
-      Pay::DB.save_object(user, :users, user.name)
+      user.save
       expect{ Pay::User.new(["u1", "u2@email.com", "400"]) }.to raise_error(Pay::Error, "User already exists")
     end
 
@@ -37,9 +37,9 @@ RSpec.describe Pay::User do
   describe ".record_transaction" do
     before :each do
       @merchant = Pay::Merchant.new(["m3", "m3@email.com", "0.5%"])
-      Pay::DB.save_object(@merchant, :merchants, @merchant.name)
+      @merchant.save
       @user = Pay::User.new(["u3", "u3@email.com", "500"])
-      Pay::DB.save_object(@user, :users, @user.name)
+      @user.save
     end
     it "creates a new transaction if credit limit is available" do
       Pay::User.record_transaction([@user.name, @merchant.name, "200.50"])
@@ -64,9 +64,9 @@ RSpec.describe Pay::User do
   describe ".credit_available_for" do
     it "returns true if credit limit is available for desired amount" do
       @merchant = Pay::Merchant.new(["m3", "m3@email.com", "0.5%"])
-      Pay::DB.save_object(@merchant, :merchants, @merchant.name)
+      @merchant.save
       @user = Pay::User.new(["u3", "u3@email.com", "500"])
-      Pay::DB.save_object(@user, :users, @user.name)
+      @user.save
       Pay::User.record_transaction([@user.name, @merchant.name, "150"])
       updated_user = Pay::DB.get_object(:users, @user.name)
       expect(updated_user.credit_available_for(350)).to eq(true)
@@ -110,7 +110,7 @@ RSpec.describe Pay::User do
   describe ".exists?" do
     it "return true if user by provided name exists" do
       user = Pay::User.new(["u3", "u3@email.com", "500"])
-      Pay::DB.save_object(user, :users, user.name)
+      user.save
       expect(Pay::User.exists?(user.name)).to eq(true)
     end
 
@@ -123,13 +123,10 @@ RSpec.describe Pay::User do
 
     it "returns an array of user names who have reached credit limit" do
       merchant = Pay::Merchant.new(["m3", "m3@email.com", "0.5%"])
-      Pay::DB.save_object(merchant, :merchants, merchant.name)
-      user3 = Pay::User.new(["u3", "u3@email.com", "500"])
-      user2 = Pay::User.new(["u2", "u2@email.com", "200"])
-      user1 = Pay::User.new(["u1", "u1@email.com", "100"])
-      Pay::DB.save_object(user3, :users, user3.name)
-      Pay::DB.save_object(user2, :users, user2.name)
-      Pay::DB.save_object(user1, :users, user1.name)
+      merchant.save
+      user3 = Pay::User.new(["u3", "u3@email.com", "500"]).save
+      user2 = Pay::User.new(["u2", "u2@email.com", "200"]).save
+      user1 = Pay::User.new(["u1", "u1@email.com", "100"]).save
       Pay::User.record_transaction([user3.name, merchant.name, "200.50"])
       Pay::User.record_transaction([user2.name, merchant.name, "200"])
       Pay::User.record_transaction([user1.name, merchant.name, "100"])
@@ -141,14 +138,10 @@ RSpec.describe Pay::User do
   describe ".get_user_wise_due" do
     it "returns an hash of users and and their dues if its more than 0" do
       merchant = Pay::Merchant.new(["m3", "m3@email.com", "0.5%"])
-      Pay::DB.save_object(merchant, :merchants, merchant.name)
-
-      user1 = Pay::User.new(["u1", "u1@email.com", "100"])
-      Pay::DB.save_object(user1, :users, user1.name)
-      user2 = Pay::User.new(["u2", "u2@email.com", "200"])
-      Pay::DB.save_object(user2, :users, user2.name)
-      user3 = Pay::User.new(["u3", "u3@email.com", "300"])
-      Pay::DB.save_object(user3, :users, user3.name)
+      merchant.save
+      user1 = Pay::User.new(["u1", "u1@email.com", "100"]).save
+      user2 = Pay::User.new(["u2", "u2@email.com", "200"]).save
+      user3 = Pay::User.new(["u3", "u3@email.com", "300"]).save
       Pay::User.record_transaction(["u1", "m3", 100])
       Pay::User.record_transaction(["u2", "m3", 200])
       due_data = Pay::User.get_user_wise_due
@@ -160,17 +153,23 @@ RSpec.describe Pay::User do
 
   describe ".all_users" do
     it "returns all users hash" do
-      user3 = Pay::User.new(["u3", "u3@email.com", "500"])
-      user2 = Pay::User.new(["u2", "u2@email.com", "200"])
-      user1 = Pay::User.new(["u1", "u1@email.com", "100"])
-      Pay::DB.save_object(user3, :users, user3.name)
-      Pay::DB.save_object(user2, :users, user2.name)
-      Pay::DB.save_object(user1, :users, user1.name)
+      user3 = Pay::User.new(["u3", "u3@email.com", "500"]).save
+      user2 = Pay::User.new(["u2", "u2@email.com", "200"]).save
+      user1 = Pay::User.new(["u1", "u1@email.com", "100"]).save
       all_users = Pay::User.all_users
 
       expect(all_users.length).to eq(3)
       expect(all_users["u3"]).to be_kind_of(Pay::User)
       expect(all_users["u3"].name).to eq("u3")
+    end
+  end
+
+  describe ".save" do
+    it "saves the object to DB" do
+      user = Pay::User.new(["u1", "u1@email.com", "100"]).save
+      all_users = Pay::User.all_users
+      expect(all_users.length).to eq(1)
+      expect(all_users.keys.include?("u1")).to eq(true)
     end
   end
 end

@@ -5,7 +5,7 @@ RSpec.describe Pay::CLI do
   before :each do
     Pay::DB.remove_db
   end
-  
+
   before :all do
     @cli = Pay::CLI.new
   end
@@ -54,7 +54,7 @@ RSpec.describe Pay::CLI do
   describe ".handle_update" do
     it "updates merchant discount when merchant name and new discount provided" do
       merchant = Pay::Merchant.new(["m4", "m4@email.com", "5%"])
-      Pay::DB.save_object(merchant, :merchants, merchant.name)
+      merchant.save
       @cli.handle_update(["merchant", "m4", "1%"])
       mechant_record = Pay::DB.get_object(:merchants, "m4")
       expect(mechant_record.discount).to eq(1)
@@ -64,9 +64,9 @@ RSpec.describe Pay::CLI do
   describe ".handle_payback" do
     it "creates a payment record for user" do
       merchant = Pay::Merchant.new(["m4", "m4@email.com", "5%"])
-      Pay::DB.save_object(merchant, :merchants, merchant.name)
+      merchant.save
       user = Pay::User.new(["u1", "u1@email.com", "100"])
-      Pay::DB.save_object(user, :users, user.name)
+      user.save
       Pay::User.record_transaction(["u1", "m4", 100])
       @cli.handle_payback(["u1", "100"])
       all_payments = Pay::DB.get_object(:paybacks)

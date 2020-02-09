@@ -15,6 +15,10 @@ module Pay
       raise Error, "Provide an positive integer value for credit limit" if @cr_limit <= 0
     end
 
+    def save
+      Pay::DB.save_object(self, :users, self.name)
+    end
+
     def self.record_transaction(txn_data)
       txn = Pay::Transaction.new(txn_data)
       user = Pay::DB.get_object(:users, txn.user)
@@ -39,7 +43,7 @@ module Pay
       end
       self.instance_variable_set(:@cr_limit, updated_cr_limit)
       self.instance_variable_set(:@due, updated_due)
-      Pay::DB.save_object(self, :users, name)
+      save
     end
 
     def self.exists?(user_name)

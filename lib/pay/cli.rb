@@ -58,11 +58,11 @@ module Pay
       case resource_type
       when "user"
         user = Pay::User.new(tokens)
-        Pay::DB.save_object(user, :users, user.name)
+        user.save
         puts "#{user.name}(#{user.cr_limit})"
       when "merchant"
         merchant = Pay::Merchant.new(tokens)
-        Pay::DB.save_object(merchant, :merchants, merchant.name)
+        merchant.save
         puts "#{merchant.name}(#{merchant.discount}%)"
       when "txn"
         Pay::User.record_transaction(tokens)
