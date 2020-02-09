@@ -1,40 +1,20 @@
-# Pay
+# README
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/pay`. To experiment with that code, run `bin/console` for an interactive prompt.
+The tech stack:
 
-TODO: Delete this and the text above, and describe your gem
+* Ruby 2.6.3
 
-## Installation
+## Usage instructions
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'pay'
-```
-
-And then execute:
-
-    $ bundle install
-
-Or install it yourself as:
-
-    $ gem install pay
-
-## Usage
-
-TODO: Write usage instructions here
+* Clone the Repo to a local directory `git clone https://github.com/sajan45/pay.git`.
+* Run `cd pay`
+* Run `bin/pay`
+* Enter `help` for supported actions
 
 ## Development
+* Run `bin/setup` to install dependencies.
+* Run `rspec .` to run the test cases
 
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+## Dependencies
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/pay.
-
-
-## License
-
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+There is no external dependency as of now. This app uses Ruby in-built 'PStore' for storing data. To run the tests, RSpec is needed, which can be installed by `bundle install` or `bin/setup`. 
