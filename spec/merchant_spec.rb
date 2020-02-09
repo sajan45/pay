@@ -59,7 +59,7 @@ RSpec.describe Pay::Merchant do
       expect(Pay::Merchant.exists?(merchant.name)).to eq(true)
     end
 
-    it "return false if merchant by provided name exists" do
+    it "return false if merchant by provided name does not exists" do
       expect(Pay::Merchant.exists?("non_existent")).to eq(false)
     end
   end

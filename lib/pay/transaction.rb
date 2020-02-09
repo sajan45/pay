@@ -12,7 +12,7 @@ module Pay
       merchant_data = Pay::DB.get_object(:merchants, @merchant)
       raise Error, "Merchant does not exists" unless merchant_data
       @amount = @amount.to_f.round(2)
-      raise Error, "Provide an positive integer value for credit limit" if @amount.zero?
+      raise Error, "Provide an positive integer value transaction amount" if @amount <= 0
       @merchant_discount = ((@amount * merchant_data.discount) / 100).round(2)
     end
 

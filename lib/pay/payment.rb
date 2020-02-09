@@ -11,7 +11,7 @@ module Pay
       user_data = Pay::DB.get_object(:users, @user)
       raise Error, "User does not exists" unless user_data
       @amount = @amount.to_f.round(2)
-      raise Error, "Provide an positive integer value for credit limit" if @amount.zero?
+      raise Error, "Provide an positive integer value for payment amount" if @amount <= 0
       raise Error, "Please enter a amount less than or equal to current due #{user_data.due}" if user_data.due < @amount
     end
 

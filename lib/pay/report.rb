@@ -14,7 +14,7 @@ module Pay
         users_dues = Pay::User.get_user_wise_due
         total = 0.0
         users_dues.each { |_u, due| total += due }
-        users_dues[:total] = total
+        users_dues["total"] = total
         return users_dues
       when "dues"
         raise Error, "user name required" if tokens.empty?
