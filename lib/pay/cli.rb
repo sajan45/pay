@@ -15,7 +15,7 @@ module Pay
       stty_save = `stty -g`.chomp
       begin
         while buf = Readline.readline('> ')
-          parse(buf)
+          execute(buf)
         end
       rescue Pay::Error => e
         puts e.message
@@ -26,8 +26,7 @@ module Pay
       end
     end
 
-    def parse(input_string)
-      command = {}
+    def execute(input_string)
       tokens = input_string.split(" ")
       action = tokens.shift
       # if such type of commands grow in number, we can use dynamic invocation of methods to
